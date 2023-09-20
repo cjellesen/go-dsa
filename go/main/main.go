@@ -1,14 +1,12 @@
 package main
 
 import (
-	col "collections"
+	linked_stack "collections/stack/linked_stack"
 	"fmt"
 )
 
 func main() {
 	fmt.Println("Testing imprt")
-	col.NewStack().Print()
-	col.NewQueue().Print()
-	col.NewPriorityQueue().Print()
-	col.NewCircularQueue().Print()
+
+	fmt.Println("Is the stack empty: ", linked_stack.New().IsEmpty())
 }
