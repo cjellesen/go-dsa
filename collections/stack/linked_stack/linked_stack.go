@@ -2,23 +2,14 @@ package linked_stack
 
 import "errors"
 
-type node[T interface{}] struct {
+type node[T any] struct {
 	previous_node *node[T]
 	value         *T
 }
 
-type LinkedStack[T interface{}] struct {
+type LinkedStack[T any] struct {
 	length   int
 	top_node *node[T]
-}
-
-type Tree[T interface{}] struct {
-	left, right *Tree[T]
-	value       T
-}
-
-func (t *Tree[T]) Lookup(x T) *Tree[T] {
-	return nil
 }
 
 // Creates a new Linked Stacks
@@ -29,8 +20,15 @@ func New[T any]() *LinkedStack[T] {
 // Creates a new node with the provided value and assignes the current
 // top nodes in the linked list as this nodes previous value. After the
 // node has been created the current top node pointer in the linked list
-// is replaced with a pointer to the newly created node.
+// is replaced with a pointer to the newly created node. The generics in
+// go apparently allow nil to match [T any] (and [T comparable]), as such
+// there is nothing that prevent adding nil to the stack. Do not do this
+// as a panic will be thrown.
 func (ls *LinkedStack[T]) Push(value *T) {
+	if value == nil {
+		panic("Tried to add the value 'nil' to the stack")
+	}
+
 	top_node := &node[T]{previous_node: ls.top_node, value: value}
 	ls.top_node = top_node
 	ls.length++
