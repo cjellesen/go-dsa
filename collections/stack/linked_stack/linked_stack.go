@@ -26,12 +26,6 @@ func New[T any]() *LinkedStack[T] {
 	return &LinkedStack[T]{top_node: nil, length: 0}
 }
 
-func NewFrom[T any](value *T) *LinkedStack[T] {
-	ls := &LinkedStack[T]{top_node: nil, length: 0}
-	ls.Push(value)
-	return ls
-}
-
 // Creates a new node with the provided value and assignes the current
 // top nodes in the linked list as this nodes previous value. After the
 // node has been created the current top node pointer in the linked list
@@ -44,9 +38,7 @@ func (ls *LinkedStack[T]) Push(value *T) {
 
 // Graps the current top node of the linked list and replaces the top node
 // pointer in the linked list with that of the previous node. Decrements
-// the length of the Linked Stack and return the value to be poped. Note that
-// caller will have to manage when the stack has been depleted since an invalid
-// memory address will be returned.
+// the length of the Linked Stack and return the value to be poped.
 func (ls *LinkedStack[T]) Pop() (*T, error) {
 	if ls.length == 0 {
 		return nil, errors.New("Tried to Pop from an empty stack")
