@@ -52,7 +52,7 @@ func (ls *LinkedStack[T]) Pop() (*T, error) {
 // if there is one else it returns nil.
 func (ls *LinkedStack[T]) Peek() (*T, error) {
 	if ls.length == 0 {
-		return nil, errors.New("Tried to Pop from an empty stack")
+		return nil, errors.New("Tried to Peek into an empty stack")
 	}
 
 	return ls.top_node.value, nil
