@@ -1,7 +1,7 @@
 package main
 
 import (
-	linked_stack "collections/stack/linked_stack"
+	linked_stack "collections"
 	"fmt"
 )
 
