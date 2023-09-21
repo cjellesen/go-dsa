@@ -1,5 +1,7 @@
 package linked_stack
 
+import "fmt"
+
 type node struct {
 	previous_node *node
 	value         interface{}
@@ -19,6 +21,10 @@ func NewFrom(value interface{}) *LinkedStack {
 	ls := &LinkedStack{top_node: nil, length: 0}
 	ls.Push(value)
 	return ls
+}
+
+func PrintMe() {
+	fmt.Println("Test")
 }
 
 // Creates a new node with the provided value and assignes the current

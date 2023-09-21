@@ -8,7 +8,5 @@ import (
 
 func main() {
 	fmt.Println("Testing imprt")
-	asd := linked_stack.New()
-	asd.IsEmpty()
-	// fmt.Println("Is the stack empty: ", linked_stack.New().IsEmpty())
+	fmt.Println("Is the stack empty: ", linked_stack.New().IsEmpty())
 }
