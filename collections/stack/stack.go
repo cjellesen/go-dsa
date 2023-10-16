@@ -1,4 +1,4 @@
-package linked_stack
+package stack
 
 import "errors"
 
