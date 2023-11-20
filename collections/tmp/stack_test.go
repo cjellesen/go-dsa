@@ -1,4 +1,4 @@
-package stack
+package collections
 
 import (
 	"testing"
@@ -9,7 +9,7 @@ type testObjects struct {
 }
 
 func TestLinkedStackPush(t *testing.T) {
-	linked_stack := New[testObjects]()
+	linked_stack := NewStack[testObjects]()
 	iter_test_size := 3
 	for i := 0; i < iter_test_size; i++ {
 		linked_stack.Push(&testObjects{i})
@@ -17,7 +17,7 @@ func TestLinkedStackPush(t *testing.T) {
 }
 
 func TestLinkedStackPop(t *testing.T) {
-	linked_stack := New[testObjects]()
+	linked_stack := NewStack[testObjects]()
 	iter_test_size := 3
 	for i := 0; i < iter_test_size; i++ {
 		linked_stack.Push(&testObjects{i})
@@ -30,7 +30,11 @@ func TestLinkedStackPop(t *testing.T) {
 		}
 
 		if stack_element.Value != count {
-			t.Fatalf("Linked Stack Push test failed: Expected value %d got value %d", count, stack_element.Value)
+			t.Fatalf(
+				"Linked Stack Push test failed: Expected value %d got value %d",
+				count,
+				stack_element.Value,
+			)
 		}
 		count--
 	}

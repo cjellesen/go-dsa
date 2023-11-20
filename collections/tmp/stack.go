@@ -1,19 +1,14 @@
-package stack
+package collections
 
 import "errors"
 
-type node[T any] struct {
-	previous_node *node[T]
-	value         *T
-}
-
 type LinkedStack[T any] struct {
 	length   int
-	top_node *node[T]
+	top_node *Node[T]
 }
 
 // Creates a new Linked Stacks
-func New[T any]() *LinkedStack[T] {
+func NewStack[T any]() *LinkedStack[T] {
 	return &LinkedStack[T]{top_node: nil, length: 0}
 }
 
@@ -39,7 +34,7 @@ func (ls *LinkedStack[T]) Push(value *T) {
 // the length of the Linked Stack and return the value to be poped.
 func (ls *LinkedStack[T]) Pop() (*T, error) {
 	if ls.length == 0 {
-		return nil, errors.New("Tried to Pop from an empty stack")
+		return nil, errors.New("tried to pop from an empty stack")
 	}
 
 	pop := ls.top_node
@@ -52,7 +47,7 @@ func (ls *LinkedStack[T]) Pop() (*T, error) {
 // if there is one else it returns nil.
 func (ls *LinkedStack[T]) Peek() (*T, error) {
 	if ls.length == 0 {
-		return nil, errors.New("Tried to Peek into an empty stack")
+		return nil, errors.New("tried to peek into an empty stack")
 	}
 
 	return ls.top_node.value, nil
