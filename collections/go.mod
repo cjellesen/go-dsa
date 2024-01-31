@@ -1,3 +1,3 @@
-module github.com/cjellesen/go-dsa/collections
+module collections
 
 go 1.21.1
