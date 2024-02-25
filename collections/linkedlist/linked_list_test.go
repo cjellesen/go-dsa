@@ -107,5 +107,4 @@ func TestRemove(t *testing.T) {
 			test_seq.Head.Value,
 		)
 	}
-
 }

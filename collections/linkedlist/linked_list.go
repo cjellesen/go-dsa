@@ -1,19 +1,19 @@
 package linkedlist
 
-type node[T any] struct {
+type Node[T any] struct {
 	Value T
-	Next  *node[T]
+	Next  *Node[T]
 }
 
 type LinkedList[T any] struct {
-	Head  *node[T]
-	Tail  *node[T]
+	Head  *Node[T]
+	Tail  *Node[T]
 	Count int
 }
 
 func (list *LinkedList[T]) AddHead(value T) {
 	temp := list.Head
-	list.Head = &node[T]{Value: value, Next: nil}
+	list.Head = &Node[T]{Value: value, Next: nil}
 	list.Head.Next = temp
 	list.Count++
 
@@ -23,7 +23,7 @@ func (list *LinkedList[T]) AddHead(value T) {
 }
 
 func (list *LinkedList[T]) AddTail(value T) {
-	node := &node[T]{Value: value, Next: nil}
+	node := &Node[T]{Value: value, Next: nil}
 	if list.Count == 0 {
 		list.Head = node
 		list.Tail = node
@@ -45,15 +45,38 @@ func (list *LinkedList[T]) RemoveHead() {
 	}
 }
 
-func (list *LinkedList[T]) RemoveTail() {
-	if list.Count > 0 {
+//func (list *LinkedList[T]) RemoveTail() {
+//	if list.Count > 0 {
+//
+//		if list.Count == 1 {
+//			list.Head = nil
+//			list.Tail = nil
+//		} else {
+//			curr := list.Head
+//			for curr.Next != list.Tail {
+//				curr = curr.Next
+//			}
+//
+//			list.Tail = curr
+//			curr.Next = nil
+//		}
+//		list.Count--
+//	}
+//}
+//
 
+func (list *LinkedList[T]) RemoveTail() {
+	list.RemoveNode(list.Tail)
+}
+
+func (list *LinkedList[T]) RemoveNode(node *Node[T]) {
+	if list.Count > 0 {
 		if list.Count == 1 {
 			list.Head = nil
 			list.Tail = nil
 		} else {
 			curr := list.Head
-			for curr.Next != list.Tail {
+			for curr.Next != node {
 				curr = curr.Next
 			}
 
