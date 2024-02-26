@@ -45,26 +45,6 @@ func (list *LinkedList[T]) RemoveHead() {
 	}
 }
 
-//func (list *LinkedList[T]) RemoveTail() {
-//	if list.Count > 0 {
-//
-//		if list.Count == 1 {
-//			list.Head = nil
-//			list.Tail = nil
-//		} else {
-//			curr := list.Head
-//			for curr.Next != list.Tail {
-//				curr = curr.Next
-//			}
-//
-//			list.Tail = curr
-//			curr.Next = nil
-//		}
-//		list.Count--
-//	}
-//}
-//
-
 func (list *LinkedList[T]) RemoveTail() {
 	list.RemoveNode(list.Tail)
 }
@@ -85,4 +65,16 @@ func (list *LinkedList[T]) RemoveNode(node *Node[T]) {
 		}
 		list.Count--
 	}
+}
+
+func (list *LinkedList[T]) Intersects(other *LinkedList[T]) bool {
+	panic("Function has not been implemented yet")
+}
+
+func (list *LinkedList[T]) GetIntersection(other *LinkedList[T]) LinkedList[T] {
+	panic("Function has not been implemented yet")
+}
+
+func (list *LinkedList[T]) HasLoop() {
+	panic("Function has not been implemented yet")
 }
