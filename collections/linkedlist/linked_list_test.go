@@ -5,14 +5,14 @@ import (
 )
 
 func create_test_lists(n int) (LinkedList[int], LinkedList[int]) {
-	sequential_add := LinkedList[int]{Head: nil, Tail: nil, Count: 0}
-	reverse_add := LinkedList[int]{Head: nil, Tail: nil, Count: 0}
+	sequential_values := LinkedList[int]{Head: nil, Tail: nil, Count: 0}
+	reverse_values := LinkedList[int]{Head: nil, Tail: nil, Count: 0}
 	for i := 0; i < n; i++ {
-		sequential_add.AddHead(i)
-		reverse_add.AddHead(n - 1 - i)
+		sequential_values.AddTail(i)
+		reverse_values.AddHead(i)
 	}
 
-	return sequential_add, reverse_add
+	return sequential_values, reverse_values
 }
 
 func TestLinkedListAddHeadAndTail(t *testing.T) {
@@ -36,7 +36,7 @@ func TestLinkedListAddHeadAndTail(t *testing.T) {
 			rev_node.Value,
 		)
 
-		if seq_node.Value != n-1-i {
+		if seq_node.Value != i {
 			t.Fatalf(
 				"Ordering of sequential linked list node is not correct - Expected value %d got value %d",
 				i,
@@ -45,7 +45,7 @@ func TestLinkedListAddHeadAndTail(t *testing.T) {
 
 		}
 
-		if rev_node.Value != i {
+		if rev_node.Value != n-1-i {
 			t.Fatalf(
 				"Ordering of reversed linked list node is not correct - Expected value %d got value %d",
 				i,
@@ -106,5 +106,97 @@ func TestRemove(t *testing.T) {
 			second.Value,
 			test_seq.Head.Value,
 		)
+	}
+}
+
+func TestRemoveDublicatesOnValueTypes(t *testing.T) {
+	sequence := [10]int{1, 1, 2, 3, 4, 4, 5, 6, 7, 7}
+	linkedList := LinkedList[int]{Head: nil, Tail: nil, Count: 0}
+	for i := 0; i < len(sequence); i++ {
+		linkedList.AddTail(sequence[i])
+	}
+
+	linkedList.RemoveDublicates()
+	no_dub_sequence := [7]int{1, 2, 3, 4, 5, 6, 7}
+	i := 0
+	curr := linkedList.Head
+	for curr.Next != nil {
+		t.Logf("Found value %d, expected value %d", curr.Value, no_dub_sequence[i])
+
+		if curr.Value != no_dub_sequence[i] {
+			t.Fatalf(
+				"Failed to correctly remove dublicates, expected value %d got %d",
+				no_dub_sequence[i],
+				curr.Value,
+			)
+		}
+		curr = curr.Next
+		i++
+	}
+}
+
+type ValueHolder struct {
+	Value int
+}
+
+func TestRemoveDublicatesOnValueStructTypes(t *testing.T) {
+	sequence := [10]int{1, 1, 2, 3, 4, 4, 5, 6, 7, 7}
+	linkedList := LinkedList[ValueHolder]{Head: nil, Tail: nil, Count: 0}
+	for i := 0; i < len(sequence); i++ {
+		value := ValueHolder{Value: sequence[i]}
+		linkedList.AddTail(value)
+	}
+
+	linkedList.RemoveDublicates()
+	no_dub_sequence := [7]int{1, 2, 3, 4, 5, 6, 7}
+	i := 0
+	curr := linkedList.Head
+	for curr.Next != nil {
+		t.Logf("Found value %d, expected value %d", curr.Value.Value, no_dub_sequence[i])
+
+		if curr.Value.Value != no_dub_sequence[i] {
+			t.Fatalf(
+				"Failed to correctly remove dublicates, expected value %d got %d",
+				no_dub_sequence[i],
+				curr.Value.Value,
+			)
+		}
+		curr = curr.Next
+		i++
+	}
+}
+
+func TestRemoveDublicatesOnReferenceStructTypes(t *testing.T) {
+	sequence := [10]int{1, 1, 2, 3, 4, 4, 5, 6, 7, 7}
+	reference_map := make(map[int]*ValueHolder)
+	for i := 0; i < len(sequence); i++ {
+		_, ok := reference_map[sequence[i]]
+		if ok {
+			continue
+		}
+		reference_map[sequence[i]] = &ValueHolder{sequence[i]}
+	}
+
+	linkedList := LinkedList[*ValueHolder]{Head: nil, Tail: nil, Count: 0}
+	for i := 0; i < len(sequence); i++ {
+		linkedList.AddTail(reference_map[sequence[i]])
+	}
+
+	linkedList.RemoveDublicates()
+	no_dub_sequence := [7]int{1, 2, 3, 4, 5, 6, 7}
+	i := 0
+	curr := linkedList.Head
+	for curr.Next != nil {
+		t.Logf("Found value %d, expected value %d", curr.Value.Value, no_dub_sequence[i])
+
+		if curr.Value.Value != no_dub_sequence[i] {
+			t.Fatalf(
+				"Failed to correctly remove dublicates, expected value %d got %d",
+				no_dub_sequence[i],
+				curr.Value.Value,
+			)
+		}
+		curr = curr.Next
+		i++
 	}
 }

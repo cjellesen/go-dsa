@@ -1,11 +1,11 @@
 package linkedlist
 
-type Node[T any] struct {
+type Node[T comparable] struct {
 	Value T
 	Next  *Node[T]
 }
 
-type LinkedList[T any] struct {
+type LinkedList[T comparable] struct {
 	Head  *Node[T]
 	Tail  *Node[T]
 	Count int
@@ -46,24 +46,53 @@ func (list *LinkedList[T]) RemoveHead() {
 }
 
 func (list *LinkedList[T]) RemoveTail() {
-	list.RemoveNode(list.Tail)
+	if list.Count == 0 {
+		return
+	}
+
+	if list.Count == 1 {
+		list.Head = nil
+		list.Tail = nil
+		list.Count--
+		return
+	}
+
+	curr := list.Head
+	for curr.Next != list.Tail {
+		curr = curr.Next
+	}
+
+	list.Tail = curr
+	curr.Next = nil
+
+	list.Count--
 }
 
-func (list *LinkedList[T]) RemoveNode(node *Node[T]) {
-	if list.Count > 0 {
-		if list.Count == 1 {
-			list.Head = nil
-			list.Tail = nil
-		} else {
-			curr := list.Head
-			for curr.Next != node {
-				curr = curr.Next
-			}
+func (list *LinkedList[T]) RemoveDublicates() {
+	if list.Count == 0 {
+		return
+	}
 
-			list.Tail = curr
-			curr.Next = nil
+	set := make(map[T]struct{})
+	set[list.Head.Value] = struct{}{}
+
+	curr := list.Head.Next
+	prev := list.Head
+	for curr != nil {
+		_, ok := set[curr.Value]
+		if ok {
+			prev.Next = curr.Next
+			list.Count--
+		} else {
+			set[curr.Value] = struct{}{}
+			prev = curr
 		}
-		list.Count--
+
+		curr = curr.Next
+	}
+
+	if list.Tail != prev {
+		list.Tail = prev
 	}
 }
 
