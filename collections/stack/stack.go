@@ -5,7 +5,7 @@ import (
 	"errors"
 )
 
-type Stack[T any] struct {
+type Stack[T comparable] struct {
 	LinkedList linkedlist.LinkedList[T]
 }
 
