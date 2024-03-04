@@ -1,0 +1,8 @@
+Stuff to investigate:
+    Sorting algorithms
+    Searching algorithms
+    Heaps
+    Trees
+    Graph algorithms
+    L-systems
+    Spatial data structures

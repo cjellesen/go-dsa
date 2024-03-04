@@ -11,18 +11,21 @@ type LinkedList[T comparable] struct {
 	Count int
 }
 
-func (list *LinkedList[T]) AddHead(node *Node[T]) {
+func (list *LinkedList[T]) AddHead(value T) error {
 	temp := list.Head
-	list.Head = node
+	list.Head = &Node[T]{Value: value}
 	list.Head.Next = temp
 	list.Count++
 
 	if list.Count == 1 {
 		list.Tail = list.Head
 	}
+
+	return nil
 }
 
-func (list *LinkedList[T]) AddTail(node *Node[T]) {
+func (list *LinkedList[T]) AddTail(value T) error {
+	node := &Node[T]{Value: value}
 	if list.Count == 0 {
 		list.Head = node
 		list.Tail = node
@@ -32,16 +35,20 @@ func (list *LinkedList[T]) AddTail(node *Node[T]) {
 
 	list.Tail = node
 	list.Count++
+
+	return nil
 }
 
 func (list *LinkedList[T]) RemoveHead() {
-	if list.Count > 0 {
-		list.Head = list.Head.Next
-		if list.Count == 0 {
-			list.Tail = nil
-		}
-		list.Count--
+	if list.Count == 0 {
+		return
 	}
+
+	list.Head = list.Head.Next
+	if list.Count == 0 {
+		list.Tail = nil
+	}
+	list.Count--
 }
 
 func (list *LinkedList[T]) RemoveTail() {
@@ -98,31 +105,54 @@ func (list *LinkedList[T]) RemoveDublicates() {
 // This function checks whether 2 linked lists intersects.
 // If an intersection exists the point of intersection is return, otherwise a nil is returned.
 func (list *LinkedList[T]) Intersects(other *LinkedList[T]) *Node[T] {
-	var short *LinkedList[T]
-	var long *LinkedList[T]
-	if list.Count > other.Count {
-		short = other
-		long = list
-	} else {
-		short = list
-		long = other
-	}
-
-	pointer := long.Head
-	for pointer != short.Head {
-		pointer = pointer.Next
-	}
-
-	if pointer != short.Head {
+	if list.Count == 0 || other.Count == 0 {
 		return nil
-	} else {
-		return pointer
 	}
+
+	if list.Head == other.Head {
+		return list.Head
+	}
+
+	var p1 = list.Head
+	var p2 = other.Head
+
+	for p1 != p2 {
+		p1 = p1.Next
+		p2 = p2.Next
+
+		if p1 == p2 {
+			return p1
+		}
+
+		if p1 == nil {
+			p1 = other.Head
+		}
+
+		if p2 == nil {
+			p2 = list.Head
+		}
+	}
+
+	return p1
 }
 
 // This function check whether a linked list has an internal loop
 func (list *LinkedList[T]) HasLoop() bool {
-	panic("Function has not been implemented yet")
+	if list.Count == 0 {
+		return false
+	}
+
+	slowPointer := list.Head
+	fastPointer := list.Head
+	for fastPointer != nil && fastPointer.Next != nil {
+		slowPointer = slowPointer.Next
+		fastPointer = fastPointer.Next.Next
+
+		if slowPointer == fastPointer {
+			return true
+		}
+	}
+	return false
 }
 
 // This is necessary if we want to implement a HashSet based on the linked list

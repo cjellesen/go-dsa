@@ -10,8 +10,8 @@ func create_sequential_and_reverse_test_data(n int) (LinkedList[int], LinkedList
 	sequential_values := LinkedList[int]{Head: nil, Tail: nil, Count: 0}
 	reverse_values := LinkedList[int]{Head: nil, Tail: nil, Count: 0}
 	for i := 0; i < n; i++ {
-		sequential_values.AddTail(&Node[int]{Value: i})
-		reverse_values.AddHead(&Node[int]{Value: i})
+		sequential_values.AddTail(i)
+		reverse_values.AddHead(i)
 	}
 
 	return sequential_values, reverse_values
@@ -137,7 +137,7 @@ func TestRemoveDublicatesOnValueTypes(t *testing.T) {
 	t.Logf("Testing using data: %d", dub_sequence)
 	linkedList := LinkedList[int]{Head: nil, Tail: nil, Count: 0}
 	for i := 0; i < len(dub_sequence); i++ {
-		linkedList.AddTail(&Node[int]{Value: dub_sequence[i]})
+		linkedList.AddTail(dub_sequence[i])
 	}
 
 	linkedList.RemoveDublicates()
@@ -169,7 +169,7 @@ func TestRemoveDublicatesOnValueStructTypes(t *testing.T) {
 	t.Logf("Testing using data: %d", dub_sequence)
 	linkedList := LinkedList[ValueHolder]{Head: nil, Tail: nil, Count: 0}
 	for i := 0; i < len(dub_sequence); i++ {
-		linkedList.AddTail(&Node[ValueHolder]{Value: ValueHolder{Value: dub_sequence[i]}})
+		linkedList.AddTail(ValueHolder{Value: dub_sequence[i]})
 	}
 
 	linkedList.RemoveDublicates()
@@ -206,7 +206,7 @@ func TestRemoveDublicatesOnReferenceStructTypes(t *testing.T) {
 
 	linkedList := LinkedList[*ValueHolder]{Head: nil, Tail: nil, Count: 0}
 	for i := 0; i < len(dub_sequence); i++ {
-		linkedList.AddTail(&Node[*ValueHolder]{Value: reference_map[dub_sequence[i]]})
+		linkedList.AddTail(reference_map[dub_sequence[i]])
 	}
 
 	linkedList.RemoveDublicates()
@@ -241,26 +241,65 @@ func create_arrays_with_offset(n int) ([]int, []int) {
 }
 
 func TestFindIntersect(t *testing.T) {
-	t.Log("Testing remove dublicates using struct pointers")
-	n := 10
-	offset := rand.IntN(n - 1)
+	t.Log("Testing locating intersects")
+	n := 100
+	diffLength := rand.IntN(n / 2)
+	intersectIndex := rand.IntN(n-diffLength-1) + diffLength
 
-	list := LinkedList[int]{Head: nil, Tail: nil}
-	offset_list := LinkedList[int]{Head: nil, Tail: nil}
+	list1 := LinkedList[int]{Head: nil, Tail: nil}
+	list2 := LinkedList[int]{Head: nil, Tail: nil}
 	for i := 0; i < n; i++ {
-		node := &Node[int]{Value: i}
-		list.AddTail(node)
-		if i >= offset {
-			offset_list.AddTail(node)
+		if i < intersectIndex {
+			list1.AddTail(i)
+			list2.AddTail(i)
+		} else if i == intersectIndex {
+			t.Logf("Intersecting lists at index: %d", i)
+			list1.AddTail(i)
+			list2.Tail.Next = list1.Tail
+		} else {
+			list1.AddTail(i)
 		}
 	}
 
-	intersection := list.Intersects(&offset_list)
-	if intersection.Value != offset {
+	intersection := list1.Intersects(&list2)
+
+	if intersection == nil {
+		t.Fatalf("No intersect found, one should have been present at index: %d", intersectIndex)
+	}
+	if intersection.Value != intersectIndex {
 		t.Fatalf(
 			"Found an intersection point with value: %d, expected %d",
 			intersection.Value,
-			offset,
+			intersectIndex,
 		)
+	}
+
+	t.Logf("Found an intersect at index: %d", intersection.Value)
+}
+
+func TestLoopDetection(t *testing.T) {
+	t.Log("Testing locating loops")
+	n := 10
+	diffLength := rand.IntN(n / 2)
+	loopIndex := rand.IntN(n-diffLength-1) + diffLength
+
+	var loopNode *Node[int]
+	list_with_loop := LinkedList[int]{Head: nil, Tail: nil}
+	list_without_loop := LinkedList[int]{Head: nil, Tail: nil}
+	for i := 0; i < n; i++ {
+		list_without_loop.AddTail(i)
+		list_with_loop.AddTail(i)
+		if i == loopIndex {
+			loopNode = list_with_loop.Tail
+		}
+	}
+
+	list_with_loop.Tail.Next = loopNode
+	if !list_with_loop.HasLoop() {
+		t.Fatalf("Failed to a loop in the linked list with a loop")
+	}
+
+	if list_without_loop.HasLoop() {
+		t.Fatal("Detected a loop in the list without a loop")
 	}
 }
