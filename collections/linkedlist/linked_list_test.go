@@ -81,6 +81,45 @@ func TestLinkedListAddHeadAndTail(t *testing.T) {
 	}
 }
 
+func TestFindUsingValues(t *testing.T) {
+	t.Log("Testing find functions using value references")
+	n := 10
+	linked_list := LinkedList[int]{Head: nil, Tail: nil}
+	for i := 0; i < n; i++ {
+		linked_list.AddTail(i)
+	}
+
+	valid_value := rand.IntN(n-2) + 1
+
+	valid_node := linked_list.Find(valid_value)
+	if valid_node.Value != valid_value {
+		t.Fatalf("Could not find value %d in linked list", valid_value)
+	}
+
+	t.Logf("Successfully found node %d", valid_node.Value)
+}
+
+func TestFindUsingStructReferences(t *testing.T) {
+	t.Log("Testing find functions using struct references")
+	n := 10
+	linked_list := LinkedList[*ValueHolder]{Head: nil, Tail: nil}
+	valid_value := &ValueHolder{Value: rand.IntN(n-2) + 1}
+	for i := 0; i < n; i++ {
+		if i != valid_value.Value {
+			linked_list.AddTail(&ValueHolder{Value: i})
+		} else {
+			linked_list.AddTail(valid_value)
+		}
+	}
+
+	valid_node := linked_list.Find(valid_value)
+	if valid_node.Value != valid_value {
+		t.Fatalf("Could not find value %d in linked list", valid_value)
+	}
+
+	t.Logf("Successfully found node %d", valid_node.Value)
+}
+
 func TestRemoveHeadAndTail(t *testing.T) {
 	t.Log("Testing remove functions")
 

@@ -11,7 +11,7 @@ type LinkedList[T comparable] struct {
 	Count int
 }
 
-func (list *LinkedList[T]) AddHead(value T) error {
+func (list *LinkedList[T]) AddHead(value T) {
 	temp := list.Head
 	list.Head = &Node[T]{Value: value}
 	list.Head.Next = temp
@@ -20,11 +20,9 @@ func (list *LinkedList[T]) AddHead(value T) error {
 	if list.Count == 1 {
 		list.Tail = list.Head
 	}
-
-	return nil
 }
 
-func (list *LinkedList[T]) AddTail(value T) error {
+func (list *LinkedList[T]) AddTail(value T) {
 	node := &Node[T]{Value: value}
 	if list.Count == 0 {
 		list.Head = node
@@ -35,8 +33,34 @@ func (list *LinkedList[T]) AddTail(value T) error {
 
 	list.Tail = node
 	list.Count++
+}
+
+func (list *LinkedList[T]) Find(value T) *Node[T] {
+	if list.Count == 0 {
+		return nil
+	}
+
+	if list.Tail.Value == value {
+		return nil
+	}
+
+	pointer := list.Head
+	for pointer != list.Tail {
+		if pointer.Value == value {
+			return pointer
+		}
+		pointer = pointer.Next
+	}
 
 	return nil
+}
+
+func (list *LinkedList[T]) AddBefore(insertLoc *Node[T], value T) {
+	panic("AddBefore has not been implemented yet")
+}
+
+func (list *LinkedList[T]) AddAfter(insertLoc *Node[T], value T) {
+	panic("AddAfter has not been impemented yet")
 }
 
 func (list *LinkedList[T]) RemoveHead() {
