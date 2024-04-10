@@ -1,19 +1,19 @@
 package linkedlist
 
-type Node[T comparable] struct {
+type node[T comparable] struct {
 	Value T
-	Next  *Node[T]
+	Next  *node[T]
 }
 
 type LinkedList[T comparable] struct {
-	Head  *Node[T]
-	Tail  *Node[T]
+	Head  *node[T]
+	Tail  *node[T]
 	Count int
 }
 
 func (list *LinkedList[T]) AddHead(value T) {
 	temp := list.Head
-	list.Head = &Node[T]{Value: value}
+	list.Head = &node[T]{Value: value}
 	list.Head.Next = temp
 	list.Count++
 
@@ -23,7 +23,7 @@ func (list *LinkedList[T]) AddHead(value T) {
 }
 
 func (list *LinkedList[T]) AddTail(value T) {
-	node := &Node[T]{Value: value}
+	node := &node[T]{Value: value}
 	if list.Count == 0 {
 		list.Head = node
 		list.Tail = node
@@ -35,7 +35,7 @@ func (list *LinkedList[T]) AddTail(value T) {
 	list.Count++
 }
 
-func (list *LinkedList[T]) Find(value T) *Node[T] {
+func (list *LinkedList[T]) Find(value T) *node[T] {
 	if list.Count == 0 {
 		return nil
 	}
@@ -55,11 +55,11 @@ func (list *LinkedList[T]) Find(value T) *Node[T] {
 	return nil
 }
 
-func (list *LinkedList[T]) AddBefore(insertLoc *Node[T], value T) {
+func (list *LinkedList[T]) AddBefore(insertLoc *node[T], value T) {
 	panic("AddBefore has not been implemented yet")
 }
 
-func (list *LinkedList[T]) AddAfter(insertLoc *Node[T], value T) {
+func (list *LinkedList[T]) AddAfter(insertLoc *node[T], value T) {
 	panic("AddAfter has not been impemented yet")
 }
 
@@ -128,7 +128,7 @@ func (list *LinkedList[T]) RemoveDublicates() {
 
 // This function checks whether 2 linked lists intersects.
 // If an intersection exists the point of intersection is return, otherwise a nil is returned.
-func (list *LinkedList[T]) Intersects(other *LinkedList[T]) *Node[T] {
+func (list *LinkedList[T]) Intersects(other *LinkedList[T]) *node[T] {
 	if list.Count == 0 || other.Count == 0 {
 		return nil
 	}
