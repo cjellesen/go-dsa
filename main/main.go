@@ -8,7 +8,7 @@ import (
 
 func main() {
 	fmt.Println("Testing")
-	test := linkedlist.LinkedList[int]{Head: nil, Tail: nil, Count: 0}
+	test := linkedlist.LinkedList[int]{Head: nil, Tail: nil}
 	fmt.Printf(
 		"LinkedList has %d nodes",
 		test.Count,

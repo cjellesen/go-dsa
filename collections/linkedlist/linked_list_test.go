@@ -6,91 +6,118 @@ import (
 	"testing"
 )
 
-func create_sequential_and_reverse_test_data(n int) (LinkedList[int], LinkedList[int]) {
-	sequential_values := LinkedList[int]{Head: nil, Tail: nil, Count: 0}
-	reverse_values := LinkedList[int]{Head: nil, Tail: nil, Count: 0}
-	for i := 0; i < n; i++ {
-		sequential_values.AddTail(i)
-		reverse_values.AddHead(i)
+func TestCount(t *testing.T) {
+	t.Log("LinkedList: Testing Count() function in uninitialized array")
+	list := LinkedList[int]{
+		Head: nil,
+		Tail: nil,
 	}
 
-	return sequential_values, reverse_values
+	if list.Count() != 0 {
+		t.Fatalf("Count of initialized linked list is different from 0")
+	}
 }
 
-func TestLinkedListAddHeadAndTail(t *testing.T) {
-	t.Log("Testing head and tail adding")
-
-	n := 10
-	seq_list, rev_list := create_sequential_and_reverse_test_data(n)
-
-	if seq_list.Count != n {
-		t.Fatalf("Expected linked list to include %d nodes had %d", n, seq_list.Count)
-	}
-
-	seq_node := seq_list.Head
-	rev_node := rev_list.Head
-	i := 0
-	for i < n {
-		t.Logf(
-			"Iteration %d - Sequential node value: %d, Reverse node value %d",
-			i,
-			seq_node.Value,
-			rev_node.Value,
+func test_arrays_for_equality_by_element[T comparable](array1 *[]T, array2 *[]T, t *testing.T) {
+	if len(*array1) != len(*array2) {
+		t.Fatalf(
+			"LinkedList - ToArray() test failed - Returned array and expected array does not have identical length",
 		)
+	}
 
-		if seq_node.Value != i {
+	for i := range len(*array1) {
+		if (*array1)[i] != (*array2)[i] {
 			t.Fatalf(
-				"Ordering of sequential linked list node is not correct - Expected value %d got value %d",
+				"LinkedList - ToArray() test failed - Value at nth index %d was not of equal value",
 				i,
-				seq_node.Value,
 			)
-
 		}
-
-		if rev_node.Value != n-1-i {
-			t.Fatalf(
-				"Ordering of reversed linked list node is not correct - Expected value %d got value %d",
-				i,
-				seq_node.Value,
-			)
-
-		}
-
-		if i < n {
-			seq_node = seq_node.Next
-			rev_node = rev_node.Next
-		}
-
-		if i == n {
-			if seq_node.Next != nil {
-				t.Fatalf(
-					"Expected the sequential tail node to have a next value of 'nil' got %d",
-					seq_node.Next.Value,
-				)
-			}
-
-			if rev_node.Next != nil {
-				t.Fatalf(
-					"Expected the reverse tail node to have a next value of 'nil' got %d",
-					seq_node.Next.Value,
-				)
-			}
-		}
-
-		i++
 	}
 }
 
-func TestFindUsingValues(t *testing.T) {
-	t.Log("Testing find functions using value references")
-	n := 10
+func TestAddHead(t *testing.T) {
+	t.Log("LinkedList: Testing AddHead() function")
+	list := LinkedList[int]{
+		Head: nil,
+		Tail: nil,
+	}
+
+	for i := range 5 {
+		list.AddHead(i + 1)
+	}
+
+	expected_array := []int{5, 4, 3, 2, 1}
+	array := list.ToArray()
+	t.Logf("Testing using data: %d", array)
+	t.Logf("Expected Result: %d", expected_array)
+	test_arrays_for_equality_by_element(&array, &expected_array, t)
+}
+
+func TestRemoveHead(t *testing.T) {
+	t.Log("LinkedList: Testing RemoveHead() function")
+	list := LinkedList[int]{
+		Head: nil,
+		Tail: nil,
+	}
+
+	for i := range 5 {
+		list.AddHead(i + 1)
+	}
+
+	list.RemoveHead()
+	expected_array := []int{4, 3, 2, 1}
+	array := list.ToArray()
+	t.Logf("Testing using data: %d", array)
+	t.Logf("Expected Result: %d", expected_array)
+	test_arrays_for_equality_by_element(&array, &expected_array, t)
+}
+
+func TestAddTail(t *testing.T) {
+	t.Log("LinkedList: Testing AddTail() function")
+	list := LinkedList[int]{
+		Head: nil,
+		Tail: nil,
+	}
+
+	for i := range 5 {
+		list.AddTail(i + 1)
+	}
+
+	array := list.ToArray()
+	expected_array := []int{1, 2, 3, 4, 5}
+	t.Logf("Testing using data: %d", array)
+	t.Logf("Expected Result: %d", expected_array)
+	test_arrays_for_equality_by_element(&array, &expected_array, t)
+}
+
+func TestRemoveTail(t *testing.T) {
+	t.Log("LinkedList: Testing RemoveTail() function")
+	list := LinkedList[int]{
+		Head: nil,
+		Tail: nil,
+	}
+
+	for i := range 5 {
+		list.AddHead(i + 1)
+	}
+
+	list.RemoveTail()
+	expected_array := []int{5, 4, 3, 2}
+	array := list.ToArray()
+	t.Logf("Testing using data: %d", array)
+	t.Logf("Expected Result: %d", expected_array)
+	test_arrays_for_equality_by_element(&array, &expected_array, t)
+}
+
+func TestFind(t *testing.T) {
+	t.Log("LinkedList: Testing Find() function using value reference")
+	n := 5
 	linked_list := LinkedList[int]{Head: nil, Tail: nil}
-	for i := 0; i < n; i++ {
+	for i := range n {
 		linked_list.AddTail(i)
 	}
 
 	valid_value := rand.IntN(n-2) + 1
-
 	valid_node := linked_list.Find(valid_value)
 	if valid_node.Value != valid_value {
 		t.Fatalf("Could not find value %d in linked list", valid_value)
@@ -99,57 +126,8 @@ func TestFindUsingValues(t *testing.T) {
 	t.Logf("Successfully found node %d", valid_node.Value)
 }
 
-func TestFindUsingStructReferences(t *testing.T) {
-	t.Log("Testing find functions using struct references")
-	n := 10
-	linked_list := LinkedList[*ValueHolder]{Head: nil, Tail: nil}
-	valid_value := &ValueHolder{Value: rand.IntN(n-2) + 1}
-	for i := 0; i < n; i++ {
-		if i != valid_value.Value {
-			linked_list.AddTail(&ValueHolder{Value: i})
-		} else {
-			linked_list.AddTail(valid_value)
-		}
-	}
-
-	valid_node := linked_list.Find(valid_value)
-	if valid_node.Value != valid_value {
-		t.Fatalf("Could not find value %d in linked list", valid_value)
-	}
-
-	t.Logf("Successfully found node %d", valid_node.Value)
-}
-
-func TestRemoveHeadAndTail(t *testing.T) {
-	t.Log("Testing remove functions")
-
-	test_seq, _ := create_sequential_and_reverse_test_data(3)
-	second_last := test_seq.Head
-	for second_last.Next != test_seq.Tail {
-		second_last = second_last.Next
-	}
-
-	test_seq.RemoveTail()
-	if test_seq.Tail != second_last {
-		t.Fatalf(
-			"Failed to correctly remove tail, expected %d after removal got %d",
-			second_last.Value,
-			test_seq.Tail.Value,
-		)
-	}
-
-	second := test_seq.Head.Next
-	test_seq.RemoveHead()
-
-	if test_seq.Head != second {
-		t.Fatalf(
-			"Failed to correctly remove head, expected %d after removal got %d",
-			second.Value,
-			test_seq.Head.Value,
-		)
-	}
-}
-
+// Will create an array with dublicates, where there will always be dublicates at the array edges as well as somewhere
+// in between.
 func create_test_data_with_dublicates(n int) ([]int, []int) {
 	n_dublicates := (n * 10 / 100) + 2
 	test_data_with_dublicates := make([]int, n+n_dublicates)
@@ -171,95 +149,24 @@ func create_test_data_with_dublicates(n int) ([]int, []int) {
 }
 
 func TestRemoveDublicatesOnValueTypes(t *testing.T) {
-	t.Log("Testing remove dublicates with values (int)")
+	t.Log("LinkedList: Testing RemoveDublicates() function")
 	no_dub_sequence, dub_sequence := create_test_data_with_dublicates(10)
 	t.Logf("Testing using data: %d", dub_sequence)
-	linkedList := LinkedList[int]{Head: nil, Tail: nil, Count: 0}
+	linkedList := LinkedList[int]{Head: nil, Tail: nil}
 	for i := 0; i < len(dub_sequence); i++ {
 		linkedList.AddTail(dub_sequence[i])
 	}
 
 	linkedList.RemoveDublicates()
-	t.Logf("Expected result: %d", no_dub_sequence)
+	t.Logf("Expected Result: %d", no_dub_sequence)
 	i := 0
 	curr := linkedList.Head
 	for curr.Next != nil {
-		t.Logf("Found value %d, expected value %d", curr.Value, no_dub_sequence[i])
-
 		if curr.Value != no_dub_sequence[i] {
 			t.Fatalf(
 				"Failed to correctly remove dublicates, expected value %d got %d",
 				no_dub_sequence[i],
 				curr.Value,
-			)
-		}
-		curr = curr.Next
-		i++
-	}
-}
-
-type ValueHolder struct {
-	Value int
-}
-
-func TestRemoveDublicatesOnValueStructTypes(t *testing.T) {
-	t.Log("Testing remove dublicates using structs")
-	no_dub_sequence, dub_sequence := create_test_data_with_dublicates(10)
-	t.Logf("Testing using data: %d", dub_sequence)
-	linkedList := LinkedList[ValueHolder]{Head: nil, Tail: nil, Count: 0}
-	for i := 0; i < len(dub_sequence); i++ {
-		linkedList.AddTail(ValueHolder{Value: dub_sequence[i]})
-	}
-
-	linkedList.RemoveDublicates()
-	t.Logf("Expected result: %d", no_dub_sequence)
-	i := 0
-	curr := linkedList.Head
-	for curr.Next != nil {
-		t.Logf("Found value %d, expected value %d", curr.Value.Value, no_dub_sequence[i])
-
-		if curr.Value.Value != no_dub_sequence[i] {
-			t.Fatalf(
-				"Failed to correctly remove dublicates, expected value %d got %d",
-				no_dub_sequence[i],
-				curr.Value.Value,
-			)
-		}
-		curr = curr.Next
-		i++
-	}
-}
-
-func TestRemoveDublicatesOnReferenceStructTypes(t *testing.T) {
-	t.Log("Testing remove dublicates using struct pointers")
-	no_dub_sequence, dub_sequence := create_test_data_with_dublicates(10)
-	t.Logf("Testing using data: %d", dub_sequence)
-	reference_map := make(map[int]*ValueHolder)
-	for i := 0; i < len(dub_sequence); i++ {
-		_, ok := reference_map[dub_sequence[i]]
-		if ok {
-			continue
-		}
-		reference_map[dub_sequence[i]] = &ValueHolder{dub_sequence[i]}
-	}
-
-	linkedList := LinkedList[*ValueHolder]{Head: nil, Tail: nil, Count: 0}
-	for i := 0; i < len(dub_sequence); i++ {
-		linkedList.AddTail(reference_map[dub_sequence[i]])
-	}
-
-	linkedList.RemoveDublicates()
-	t.Logf("Expected result: %d", no_dub_sequence)
-	i := 0
-	curr := linkedList.Head
-	for curr.Next != nil {
-		t.Logf("Found value %d, expected value %d", curr.Value.Value, no_dub_sequence[i])
-
-		if curr.Value.Value != no_dub_sequence[i] {
-			t.Fatalf(
-				"Failed to correctly remove dublicates, expected value %d got %d",
-				no_dub_sequence[i],
-				curr.Value.Value,
 			)
 		}
 		curr = curr.Next
@@ -280,8 +187,8 @@ func create_arrays_with_offset(n int) ([]int, []int) {
 }
 
 func TestFindIntersect(t *testing.T) {
-	t.Log("Testing locating intersects")
-	n := 100
+	t.Log("LinkedList: Testing Intersects() function")
+	n := 10
 	diffLength := rand.IntN(n / 2)
 	intersectIndex := rand.IntN(n-diffLength-1) + diffLength
 
@@ -301,7 +208,6 @@ func TestFindIntersect(t *testing.T) {
 	}
 
 	intersection := list1.Intersects(&list2)
-
 	if intersection == nil {
 		t.Fatalf("No intersect found, one should have been present at index: %d", intersectIndex)
 	}
@@ -317,7 +223,7 @@ func TestFindIntersect(t *testing.T) {
 }
 
 func TestLoopDetection(t *testing.T) {
-	t.Log("Testing locating loops")
+	t.Log("LinkedList: Testing HasLoop() function")
 	n := 10
 	diffLength := rand.IntN(n / 2)
 	loopIndex := rand.IntN(n-diffLength-1) + diffLength
@@ -341,4 +247,44 @@ func TestLoopDetection(t *testing.T) {
 	if list_without_loop.HasLoop() {
 		t.Fatal("Detected a loop in the list without a loop")
 	}
+}
+
+func TestInsertionAfterNode(t *testing.T) {
+	t.Log("LinkedList: Testing AddAfter() function")
+	list := LinkedList[int]{
+		Head: nil,
+		Tail: nil,
+	}
+
+	for i := range 5 {
+		list.AddTail(i + 1)
+	}
+
+	insertion_node := list.Find(3)
+	list.AddAfter(insertion_node, 20)
+	array := list.ToArray()
+	expected_array := []int{1, 2, 3, 20, 4, 5}
+	t.Logf("Testing using data: %d", array)
+	t.Logf("Expected Result: %d", expected_array)
+	test_arrays_for_equality_by_element(&array, &expected_array, t)
+}
+
+func TestInsertionBeforeNode(t *testing.T) {
+	t.Log("LinkedList: Testing AddBefore() function")
+	list := LinkedList[int]{
+		Head: nil,
+		Tail: nil,
+	}
+
+	for i := range 5 {
+		list.AddTail(i + 1)
+	}
+
+	insertion_node := list.Find(3)
+	list.AddBefore(insertion_node, 20)
+	array := list.ToArray()
+	expected_array := []int{1, 2, 20, 3, 4, 5}
+	t.Logf("Testing using data: %d", array)
+	t.Logf("Expected Result: %d", expected_array)
+	test_arrays_for_equality_by_element(&array, &expected_array, t)
 }

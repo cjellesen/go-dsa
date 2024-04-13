@@ -1,30 +1,36 @@
 package linkedlist
 
-type node[T comparable] struct {
+import "errors"
+
+type Node[T comparable] struct {
 	Value T
-	Next  *node[T]
+	Next  *Node[T]
 }
 
 type LinkedList[T comparable] struct {
-	Head  *node[T]
-	Tail  *node[T]
-	Count int
+	Head  *Node[T]
+	Tail  *Node[T]
+	count int
+}
+
+func (list *LinkedList[T]) Count() int {
+	return list.count
 }
 
 func (list *LinkedList[T]) AddHead(value T) {
 	temp := list.Head
-	list.Head = &node[T]{Value: value}
+	list.Head = &Node[T]{Value: value}
 	list.Head.Next = temp
-	list.Count++
+	list.count++
 
-	if list.Count == 1 {
+	if list.count == 1 {
 		list.Tail = list.Head
 	}
 }
 
 func (list *LinkedList[T]) AddTail(value T) {
-	node := &node[T]{Value: value}
-	if list.Count == 0 {
+	node := &Node[T]{Value: value}
+	if list.count == 0 {
 		list.Head = node
 		list.Tail = node
 	} else {
@@ -32,11 +38,11 @@ func (list *LinkedList[T]) AddTail(value T) {
 	}
 
 	list.Tail = node
-	list.Count++
+	list.count++
 }
 
-func (list *LinkedList[T]) Find(value T) *node[T] {
-	if list.Count == 0 {
+func (list *LinkedList[T]) Find(value T) *Node[T] {
+	if list.count == 0 {
 		return nil
 	}
 
@@ -55,35 +61,73 @@ func (list *LinkedList[T]) Find(value T) *node[T] {
 	return nil
 }
 
-func (list *LinkedList[T]) AddBefore(insertLoc *node[T], value T) {
-	panic("AddBefore has not been implemented yet")
+func (list *LinkedList[T]) AddBefore(insertLoc *Node[T], value T) error {
+	if insertLoc == list.Head {
+		list.AddHead(value)
+		return nil
+	}
+
+	nodeToInsert := &Node[T]{Value: value}
+	pointer := list.Head
+	for pointer != list.Tail {
+		if pointer.Next == insertLoc {
+			temp := pointer.Next
+			pointer.Next = nodeToInsert
+			nodeToInsert.Next = temp
+			list.count++
+			return nil
+		}
+
+		pointer = pointer.Next
+	}
+
+	return errors.New("The specified node to insert before does not exists")
 }
 
-func (list *LinkedList[T]) AddAfter(insertLoc *node[T], value T) {
-	panic("AddAfter has not been impemented yet")
+func (list *LinkedList[T]) AddAfter(insertLoc *Node[T], value T) error {
+	if insertLoc == list.Tail {
+		list.AddTail(value)
+		return nil
+	}
+
+	nodeToInsert := &Node[T]{Value: value}
+	pointer := list.Head
+	for pointer != list.Tail {
+		if pointer == insertLoc {
+			temp := pointer.Next
+			pointer.Next = nodeToInsert
+			nodeToInsert.Next = temp
+			list.count++
+			return nil
+		}
+
+		pointer = pointer.Next
+	}
+
+	return errors.New("The specified node to insert after does not exists")
 }
 
 func (list *LinkedList[T]) RemoveHead() {
-	if list.Count == 0 {
+	if list.count == 0 {
 		return
 	}
 
 	list.Head = list.Head.Next
-	if list.Count == 0 {
+	if list.count == 0 {
 		list.Tail = nil
 	}
-	list.Count--
+	list.count--
 }
 
 func (list *LinkedList[T]) RemoveTail() {
-	if list.Count == 0 {
+	if list.count == 0 {
 		return
 	}
 
-	if list.Count == 1 {
+	if list.count == 1 {
 		list.Head = nil
 		list.Tail = nil
-		list.Count--
+		list.count--
 		return
 	}
 
@@ -95,11 +139,11 @@ func (list *LinkedList[T]) RemoveTail() {
 	list.Tail = curr
 	curr.Next = nil
 
-	list.Count--
+	list.count--
 }
 
 func (list *LinkedList[T]) RemoveDublicates() {
-	if list.Count == 0 {
+	if list.count == 0 {
 		return
 	}
 
@@ -112,7 +156,7 @@ func (list *LinkedList[T]) RemoveDublicates() {
 		_, ok := set[curr.Value]
 		if ok {
 			prev.Next = curr.Next
-			list.Count--
+			list.count--
 		} else {
 			set[curr.Value] = struct{}{}
 			prev = curr
@@ -128,8 +172,8 @@ func (list *LinkedList[T]) RemoveDublicates() {
 
 // This function checks whether 2 linked lists intersects.
 // If an intersection exists the point of intersection is return, otherwise a nil is returned.
-func (list *LinkedList[T]) Intersects(other *LinkedList[T]) *node[T] {
-	if list.Count == 0 || other.Count == 0 {
+func (list *LinkedList[T]) Intersects(other *LinkedList[T]) *Node[T] {
+	if list.count == 0 || other.count == 0 {
 		return nil
 	}
 
@@ -162,7 +206,7 @@ func (list *LinkedList[T]) Intersects(other *LinkedList[T]) *node[T] {
 
 // This function check whether a linked list has an internal loop
 func (list *LinkedList[T]) HasLoop() bool {
-	if list.Count == 0 {
+	if list.count == 0 {
 		return false
 	}
 
@@ -182,4 +226,17 @@ func (list *LinkedList[T]) HasLoop() bool {
 // This is necessary if we want to implement a HashSet based on the linked list
 func (list *LinkedList[T]) Sort() {
 	panic("Function has not been implemented yet")
+}
+
+func (list *LinkedList[T]) ToArray() []T {
+	array := make([]T, list.count)
+	pointer := list.Head
+	i := 0
+	for pointer != nil {
+		array[i] = pointer.Value
+		pointer = pointer.Next
+		i++
+	}
+
+	return array
 }
