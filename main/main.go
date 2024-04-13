@@ -11,6 +11,6 @@ func main() {
 	test := linkedlist.LinkedList[int]{Head: nil, Tail: nil}
 	fmt.Printf(
 		"LinkedList has %d nodes",
-		test.Count,
+		test.Count(),
 	)
 }

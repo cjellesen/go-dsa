@@ -1,12 +1,13 @@
 package stack
 
 import (
-	"collections/linkedlist"
 	"errors"
+
+	"github.com/cjellesen/go-dsa/collections/linkedlist"
 )
 
 type Stack[T comparable] struct {
-	LinkedList linkedlist.LinkedList[T]
+	linkedList linkedlist.LinkedList[T]
 }
 
 // Creates a new node with the provided value and assignes the current
@@ -17,7 +18,7 @@ type Stack[T comparable] struct {
 // there is nothing that prevent adding nil to the stack. Do not do this
 // as a panic will be thrown.
 func (s *Stack[T]) Push(value T) {
-	s.LinkedList.AddHead(value)
+	s.linkedList.AddHead(value)
 }
 
 // Graps the current top node of the linked list and replaces the top node
@@ -30,7 +31,7 @@ func (s *Stack[T]) Pop() (T, error) {
 		return r, err
 	}
 
-	s.LinkedList.RemoveHead()
+	s.linkedList.RemoveHead()
 	return r, nil
 }
 
@@ -42,10 +43,10 @@ func (s *Stack[T]) Peek() (T, error) {
 		return r, errors.New("tried to peek into an empty stack")
 	}
 
-	return s.LinkedList.Head.Value, nil
+	return s.linkedList.Head.Value, nil
 }
 
 // Checks if the Linked Stack is empty
 func (s *Stack[T]) IsEmpty() bool {
-	return s.LinkedList.Count == 0
+	return s.linkedList.Count() == 0
 }
