@@ -10,20 +10,10 @@ type Stack[T comparable] struct {
 	linkedList linkedlist.LinkedList[T]
 }
 
-// Creates a new node with the provided value and assignes the current
-// top nodes in the linked list as this nodes previous value. After the
-// node has been created the current top node pointer in the linked list
-// is replaced with a pointer to the newly created node. The generics in
-// go apparently allow nil to match [T any] (and [T comparable]), as such
-// there is nothing that prevent adding nil to the stack. Do not do this
-// as a panic will be thrown.
 func (s *Stack[T]) Push(value T) {
 	s.linkedList.AddHead(value)
 }
 
-// Graps the current top node of the linked list and replaces the top node
-// pointer in the linked list with that of the previous node. Decrements
-// the length of the Linked Stack and return the value to be poped.
 func (s *Stack[T]) Pop() (T, error) {
 	r, err := s.Peek()
 
@@ -35,8 +25,6 @@ func (s *Stack[T]) Pop() (T, error) {
 	return r, nil
 }
 
-// Checks if the Linked Stack contains a top top node the return said node
-// if there is one else it returns nil.
 func (s *Stack[T]) Peek() (T, error) {
 	var r T
 	if s.IsEmpty() {
@@ -46,7 +34,6 @@ func (s *Stack[T]) Peek() (T, error) {
 	return s.linkedList.Head.Value, nil
 }
 
-// Checks if the Linked Stack is empty
 func (s *Stack[T]) IsEmpty() bool {
 	return s.linkedList.Count() == 0
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/cjellesen/go-dsa/collections/linkedlist"
+	"github.com/cjellesen/go-dsa/collections/stack"
 )
 
 func main() {
@@ -13,4 +14,7 @@ func main() {
 		"LinkedList has %d nodes",
 		test.Count(),
 	)
+
+	stack := stack.Stack[int]{}
+	stack.IsEmpty()
 }
