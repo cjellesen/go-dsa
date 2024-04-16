@@ -53,6 +53,21 @@ func TestAddHead(t *testing.T) {
 	test_arrays_for_equality_by_element(&array, &expected_array, t)
 }
 
+func TestRemoveHeadFromListOf1(t *testing.T) {
+	t.Log("LinkedList: Testing RemoveHead() from list of count = 1")
+	list := LinkedList[int]{
+		Head: nil,
+		Tail: nil,
+	}
+
+	list.AddHead(1)
+	list.RemoveHead()
+
+	if list.count != 0 && (list.Head != nil || list.Tail != nil) {
+		t.Logf("Failed to correctly reset linked list")
+	}
+}
+
 func TestRemoveHead(t *testing.T) {
 	t.Log("LinkedList: Testing RemoveHead() function")
 	list := LinkedList[int]{
@@ -88,6 +103,20 @@ func TestAddTail(t *testing.T) {
 	t.Logf("Testing using data: %d", array)
 	t.Logf("Expected Result: %d", expected_array)
 	test_arrays_for_equality_by_element(&array, &expected_array, t)
+}
+
+func TestRemoveTailFromListOf1(t *testing.T) {
+	t.Log("LinkedList: Testing RemoveTail() from list of count = 1")
+	list := LinkedList[int]{
+		Head: nil,
+		Tail: nil,
+	}
+
+	list.AddHead(1)
+	list.RemoveTail()
+	if list.count != 0 && (list.Head != nil || list.Tail != nil) {
+		t.Logf("Failed to correctly reset linked list")
+	}
 }
 
 func TestRemoveTail(t *testing.T) {

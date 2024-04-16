@@ -18,14 +18,16 @@ func (list *LinkedList[T]) Count() int {
 }
 
 func (list *LinkedList[T]) AddHead(value T) {
-	temp := list.Head
-	list.Head = &Node[T]{Value: value}
-	list.Head.Next = temp
-	list.count++
-
-	if list.count == 1 {
-		list.Tail = list.Head
+	node := &Node[T]{Value: value}
+	if list.count == 0 {
+		list.Head = node
+		list.Tail = node
+	} else {
+		node.Next = list.Head
+		list.Head = node
 	}
+
+	list.count++
 }
 
 func (list *LinkedList[T]) AddTail(value T) {
@@ -35,9 +37,9 @@ func (list *LinkedList[T]) AddTail(value T) {
 		list.Tail = node
 	} else {
 		list.Tail.Next = node
+		list.Tail = node
 	}
 
-	list.Tail = node
 	list.count++
 }
 
@@ -112,10 +114,14 @@ func (list *LinkedList[T]) RemoveHead() {
 		return
 	}
 
-	list.Head = list.Head.Next
-	if list.count == 0 {
+	if list.count == 1 {
+		list.Head = nil
 		list.Tail = nil
+		list.count--
+		return
 	}
+
+	list.Head = list.Head.Next
 	list.count--
 }
 
