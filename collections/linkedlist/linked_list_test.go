@@ -133,6 +133,33 @@ func TestRemoveTail(t *testing.T) {
 	list.RemoveTail()
 	expected_array := []int{5, 4, 3, 2}
 	array := list.ToArray()
+	if len(expected_array) != len(array) {
+		t.Fatalf("Arrays does not match")
+	}
+	t.Logf("Testing using data: %d", array)
+	t.Logf("Expected Result: %d", expected_array)
+	test_arrays_for_equality_by_element(&array, &expected_array, t)
+}
+
+func TestAddHeadAddTailAlteration(t *testing.T) {
+	t.Log("LinkedList: Testing alternating AddHead(), AddTail()")
+	list := LinkedList[int]{
+		Head:  nil,
+		Tail:  nil,
+		count: 0,
+	}
+	for i := range 5 {
+		if i%2 == 0 {
+			list.AddHead(i)
+		} else {
+			list.AddTail(i)
+		}
+	}
+	expected_array := []int{4, 2, 0, 1, 3}
+	array := list.ToArray()
+	if len(expected_array) != len(array) {
+		t.Fatalf("Arrays does not match")
+	}
 	t.Logf("Testing using data: %d", array)
 	t.Logf("Expected Result: %d", expected_array)
 	test_arrays_for_equality_by_element(&array, &expected_array, t)
