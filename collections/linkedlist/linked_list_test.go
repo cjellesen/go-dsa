@@ -14,7 +14,7 @@ func TestCount(t *testing.T) {
 	}
 
 	if list.Count() != 0 {
-		t.Fatalf("Count of initialized linked list is different from 0")
+		t.Fatalf("Count of initialized linked list != 0")
 	}
 }
 
@@ -247,7 +247,6 @@ func TestFindIntersect(t *testing.T) {
 	n := 10
 	diffLength := rand.IntN(n / 2)
 	intersectIndex := rand.IntN(n-diffLength-1) + diffLength
-
 	list1 := LinkedList[int]{Head: nil, Tail: nil}
 	list2 := LinkedList[int]{Head: nil, Tail: nil}
 	for i := 0; i < n; i++ {
@@ -257,7 +256,12 @@ func TestFindIntersect(t *testing.T) {
 		} else if i == intersectIndex {
 			t.Logf("Intersecting lists at index: %d", i)
 			list1.AddTail(i)
-			list2.Tail.Next = list1.Tail
+			if intersectIndex == 0 {
+				list2.Head = list2.Tail
+			} else {
+
+				list2.Tail.Next = list1.Tail
+			}
 		} else {
 			list1.AddTail(i)
 		}
